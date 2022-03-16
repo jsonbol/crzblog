@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:http="http://www.w3.org/1999/xhtml"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4" xmlns="http://www.w3.org/1999/html">
+	<head>
+		<meta charset="UTF-8">
+		<title>ChenRZ's Blog</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<meta name="keywords" content="博客,个人,学习,IT,ChenRZ,程序猿,springboot,java,后端">
+		<meta name="description" content="ChenRZ，正宗00后，爱编程。专注于Java,Spring等后端技术探索">
+		<link rel="icon" type="image/x-icon" href="../static/img/local/avatar.ico">
+		<link href="https://lib.baomitu.com/amazeui/2.7.2/css/amazeui.min.css" rel="stylesheet">
+		<link href="https://lib.baomitu.com/font-awesome/5.8.0/css/fontawesome.min.css" rel="stylesheet">
+		<link href="https://cdn.staticfile.org/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="../static/css/all.css">
+		<link rel="stylesheet" href="../static/css/index.css">
+		<link rel="stylesheet" href="../static/css/plugs_paging.css">
+		<link rel="stylesheet" href="../static/css/mycss/my.css">
+
+		<script src="https://lib.baomitu.com/underscore.js/1.9.1/underscore-min.js"></script>
+		<script src="../static/js/lastUrl.js"></script>
+		<script src="https://lib.baomitu.com/amazeui/2.7.2/js/amazeui.min.js"></script>
+		<!-- 引入handlebars模板-->
+		<script src="../static/js/handlebars.min.js"></script>
+		<!-- jQuery -->
+		<script src="https://lib.baomitu.com/jquery/3.3.1/jquery.min.js"></script>
+
+	</head>
+	<body class="total-back">
+		<div id="app">
+			<!-- 主页的头部信息与注册和登录页的信息不同 -->
+			<div class="headers">
+				<div class="am-topbar index-header" style="margin-bottom: 0;">
+					<h1 class="am-topbar-brand" style="margin-left: 3%;>
+						<a href=""><img src=" ../static/img/local/avatar.jpg" class="imgStyle"
+						style="width: 32px;height: 32px;border-radius:100%;overflow: hidden;">ChenRZ's Blog</a>
+					</h1>
+					<button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only"
+						style="background-color: #CCCCCC;border-color: white;border-radius: 6px"
+						data-am-collapse="{target: '#doc-topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span
+							class="am-icon-bars"></span></button>
+					<div class="am-collapse am-topbar-collapse" id="doc-topbar-collapse" style="margin-left: 25%;">
+						<ul class="am-nav am-nav-pills am-topbar-nav">
+							<li><a class="top_bar" href="index.html" style="cursor: pointer;"><span
+										class="am-icon-home"></span>&nbsp;&nbsp;&nbsp;首页</a></li>&nbsp;
+							<li><a class="top_bar" href="categories.html" style="cursor: pointer;"><span
+										class="am-icon-th"></span>&nbsp;&nbsp;&nbsp;分类</a></li>
+							<li><a class="top_bar" href="time-line.html" style="cursor: pointer;"><span
+										class="icon ion-clock"></span>时间轴</a></li>
+							<li><a class="top_bar" href="leave-message.html" style="cursor: pointer;"><span
+										class="am-icon-book"></span>&nbsp;&nbsp;&nbsp;留言板</a></li>
+							<li><a class="top_bar" href="aboutme.html" style="cursor: pointer;"><span
+										class="am-icon-user"></span>&nbsp;&nbsp;&nbsp;关于我</a> </li>
+							<li><a class="top_bar" href="dashboard.html" style="cursor: pointer;"><span
+										class="am-icon-calendar-plus-o"></span>&nbsp;&nbsp;&nbsp;后台管理</a></li>
+						</ul>
+						<!-- 右上角下拉列表框 -->
+						<div class="am-topbar-right" th:if="${#httpServletRequest.remoteUser}">
+						<div class="am-dropdown" data-am-dropdown="{boundary: '.am-topbar'}">
+                        <ul class="am-dropdown-content">
+                            <li><a href="/user" sec:authorize="hasRole('ROLE_USER')">个人主页</a></li>
+                            <li><a href="dashboard.html" sec:authorize="hasRole('ROLE_SUPERADMIN')">网站后台管理</a></li>
+                            <li><a href="/user" class="news">消息<span class="newsNum am-badge am-badge-danger"></span></a></li>
+                            <li><a class="feedbackClick">反馈</a></li>
+                            <hr style="margin: 10px 0 5px 0;">
+                            <li><a th:href="@{/logout}">退出登录</a></li>
+                        </ul>
+                    </div>
+                </div>
+			</div>
+        </div>
+		<!--页面主体-->
+		<div id="main" style="margin-top: 16px">
+			<div class="am-g">
+				<div class="am-u-sm-12 am-u-lg-9">
+					<div class="radioBroadcast">
+						<i class="am-icon-volume-up" style="margin-left: 10px;color: #fbd602"></i>
+						<div class="roll">
+							<ul class="uuu">
+								<li class="lll">新增最新留言展示，可在个人主页查看最新留言啦~~~</li>
+								<li class="lll">愿你有前进一寸的勇气，亦有后退一尺的从容。</li>
+								<li class="lll">不必羡慕他人，你同样可以很优秀</li>
+								<li class="lll">将来的你，会感谢现在努力付出的自己</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="am-g">
+				<div class="am-u-sm-12 am-u-lg-3 am-hide-md-down">
+					<div id="left">
+						<div class="myCard">
+							<div class="am-g">
+								<div class="am-u-sm-5">
+									<!--todo 首页头像-->
+									<div class="img-title">
+										<img class="img" src="../static/img/local/avatar.jpg">
+									</div>
+								</div>
+								<div class="am-u-sm-7" style="padding: 0 20px 0 0;">
+									<div class="img-words">
+										<h3 id="name">程序猿ChenRZ</h3>
+										<small style="font-size: 13px;color: #808080ad">事业和工作的乐趣，不在于取得的成功和业绩，更多的乐趣在于跌跌闯闯的过程中。</small>
+									</div>
+								</div>
+							</div>
+							<div class="clear"></div>
+							<div id="connection" style="font-size: 14px">
+								<span style="color: #009688">微信：ChenRuizhao0628</span><br>
+								<span style="color: #009688">QQ：1482174085</span><br>
+								<div id="follow">
+									<button class="myCardBtn am-btn am-btn-secondary am-round attention_btn" data-am-offcanvas="{target: '#doc-oc-demo2', effect: 'push'}">扫描二维码关注我</button>
+								</div>
+								<!--左侧栏-->
+								<div id="doc-oc-demo2" class="am-offcanvas">
+									<div class="am-offcanvas-bar">
+										<div class="am-offcanvas-content">
+											<p>
+												愿你以后的生活有人陪伴 <br/>
+												再忙也要捕捉快乐 <br/>
+												嘿，今天的你真可爱<br><br>
+
+												一个人走路是和地球单独约会<br>
+												总有人<br>
+												山高路远，跋山涉水<br>
+												为你而来
+											</p>
+
+											<div class="halving-line">
+												<i class="am-icon-hand-o-down " ></i>
+												<i class="am-icon-hand-o-down " ></i>
+												<i class="am-icon-hand-o-down " ></i>
+											</div>
+											<div class="halving-line-words">
+												<p>想交个朋友吗<br>那就快扫下面吧</p>
+											</div>
+											<hr data-am-widget="divider" style="width: 50%" class="am-divider am-divider-dashed" />
+											<div class="zhy-qq-weixin">
+												<div class="zhy-qq-box">
+													<p>QQ</p>
+													<img src="../static/img/local/QQ.jpg"  class="qq_code am-img-thumbnail am-radius">
+												</div>
+												<div class="zhy-weixin-box">
+													<p>微信</p>
+													<img src="../static/img/local/weixin.jpg"  class="weixin_code am-img-thumbnail am-radius">
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<hr>
+							<div class="crz-qq-weixin">
+								<div class="zhy-weixin-box">
+									<img style="margin-top:10px;margin-left: 25px;" src="../static/img/local/weixin.jpg"  class="weixin_code am-img-thumbnail am-radius">
+									<img style="margin-left: 35px;margin-bottom: 5px;" src="../static/img/local/QQ.png"  class="weixin_code am-img-thumbnail am-radius">
+								</div>
+							</div>
+						</div>
+						<!-- 最新评论面板 -->
+						<div class="new-comment">
+							<div data-am-widget="list_news" class="am-list-news am-list-news-default" >
+								<div class="am-list-news-hd am-cf">
+									<a class="newComments">
+										<h2 style="color:black">最新评论</h2>
+									</a>
+								</div>
+								<div class="am-list-news-bd" id="commentList">
+									
+								</div>
+							</div>
+						</div>
+						<!-- 最新留言面板 -->
+						<div class="new-leaveWord">
+							<div data-am-widget="list_news" class="am-list-news am-list-news-default" >
+								<div class="am-list-news-hd am-cf">
+									<a class="newLeaveWord">
+										<h2 style="color:black">最新留言</h2>
+									</a>
+								</div>
+								<div class="am-list-news-bd" id="messageList">
+									
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="showArticle am-u-sm-12 am-u-lg-6">
+					<div class="articles" id="showAllBlog">
+					  
+					</div>
+				</div>
+				<div class="am-u-sm-12 am-u-lg-3">
+					<div id="right">
+						<h3 class="widget-title">公告</h3>
+						<div class="widget">
+							<div class="bg-danger">
+								<div class="zhy-info">
+									<i class="am-icon-quote-left" style="float: left"></i><br>
+
+									<div class="zhy-info-day">
+										<p>不要因为没有掌声就放弃梦想，</p>
+										<p>别人都在前进，我为什么要停下。</p>
+										<p>晨曦朝露去，披星戴月归。</p>
+										<p>锲而舍之，朽木不折；</p>
+										<p>锲而不舍，金石可镂。</p>
+										<p>既然选择了远方，就只顾风雨兼程。</p>
+										<p style="text-align: right;padding-top: 10px">--- crz</p>
+									</div>
+									<i class="am-icon-quote-right" style="float: right"></i>
+									<div class="zhy-info-opinion">
+										<p><strong>Welcome to ChenRZ's blog！！！</strong></p>
+										<p style="line-height: 25px">种一棵树最好的时间是十年前，<br>其次是现在。</p>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="myStory" >
+							<div class="bg-myStory">
+								<div><a class="bg-myStory-a">我的故事</a></div>
+							</div>
+							<div class="myStory-words">一盆小花，一杯清茶</div>
+						</div>
+						<div class="myStory">
+							 <div class="bg-myGirl">
+							    <div><a class="bg-myGirl-a" target="_blank">我的女孩</a></div>
+							</div>
+							<div class="myStory-words">我的女孩，你还在吗</div>
+						</div>
+						<div class="myStory">
+							<div class="bg-myHeart">
+								<div><a class="bg-myGirl-a" target="_blank">藏心阁</a></div>
+							</div>
+							<div class="myStory-words">曾经的我，写给未来的自己</div>
+						</div>
+						<div class="tag-cloud">
+							<h3 class="widget-title">标签云</h3>
+							<div class="widget-tag-cloud">
+								<span>暂无标签</span>
+							</div>
+						</div>
+
+						<div class="site-info am-hide-sm-only">
+							<h5 class="site-title">
+								<i class="am-icon-info site-icon"></i>
+								<strong style="margin-left: 15px">网站信息</strong>
+							</h5>
+							<ul class="site-default" style="height: 168px">
+								<li id="total-article">
+									<script type="text/template" id="totalA">
+										<i class="am-icon-file site-default-icon"></i>
+										<span class="site-default-word">文章总数</span>：{{this}} 篇
+									</script>
+								</li>
+								<li id="total-category">
+									<script type="text/template" id="totalC">
+										<i class="am-icon-tags site-default-icon"></i>
+										<span class="site-default-word">分类总数</span>：{{this}} 个
+									</script>
+								</li>
+								<li id="total-message">
+									<script type="text/template" id="totalM">
+										<i class="am-icon-comments-o site-default-icon"></i>
+										<span class="site-default-word">留言总数</span>：{{this}} 条
+									</script>
+								</li>
+								<li id="total-comment">
+									<script type="text/template" id="totalP">
+										<i class="am-icon-commenting-o site-default-icon"></i>
+										<span class="site-default-word">评论总数</span>：{{this}} 条
+									</script>
+								</li>
+								<li>
+									<i class="am-icon-calendar site-default-icon"></i>
+									<span class="site-default-word">网站运行天数</span>：
+									<span class="siteRunningTime" id="days"></span>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	<!-- 引入my.js -->
+	<script src="../static/js/my_js/my.js"></script>
+	<script src="../static/plugins/plugin-ee/sweetalert2/sweetalert2.js"></script>
+	<script src="../static/js/all.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			/* 展示所有博客 */
+			$.ajax({
+				url:"http://119.91.61.56:8080/blog/show_all_blog",
+				type:"GET",
+				dataType:"JSON",
+				success:function(data){
+					var source = $("#showBlog").html();
+					var template = Handlebars.compile(source);
+					var html = template(data);
+					$("#showAllBlog").html(html);
+				},
+				error:function(xhr){
+					alert("获取访问信息失败");
+					location.href="404.html";
+				}
+			});
+			/* 展示最新评论 */
+			$.ajax({
+				url:"http://119.91.61.56:8080/blogComment/show_new_comment",
+				type:"GET",
+				dataType:"JSON",
+				success:function(data){
+					var source = $("#commentT").html();
+					var template = Handlebars.compile(source);
+					var html = template(data);
+					$("#commentList").html(html);
+				}
+			});
+			/* 展示最新留言 */
+			$.ajax({
+				url:"http://119.91.61.56:8080/blogMessage/show_new_message",
+				type:"GET",
+				dataType:"JSON",
+				success:function(data){
+					var source = $("#messageT").html();
+					var template = Handlebars.compile(source);
+					var html = template(data);
+					$("#messageList").html(html);
+				}
+			});
+			/* 显示文章总数 */
+			$.ajax({
+				url:"http://119.91.61.56:8080/article/record_total_num",
+				type:"GET",
+				dataType:"JSON",
+				success:function(data){
+					var source = $("#totalA").html();
+					var template = Handlebars.compile(source);
+					var html = template(data);
+					$("#total-article").html(html);
+				},
+				error:function(){
+					alert("获取访问信息失败");
+					location.href="404.html";
+				}
+			});
+			/* 显示分类总数 */
+			$.ajax({
+				url:"http://119.91.61.56:8080/category/record_total_num",
+				type:"GET",
+				dataType:"JSON",
+				success:function(data){
+					var source = $("#totalC").html();
+					var template = Handlebars.compile(source);
+					var html = template(data);
+					$("#total-category").html(html);
+				},
+				error:function(){
+					alert("获取访问信息失败");
+					location.href="404.html";
+				}
+			});
+			/* 显示留言总数 */
+			$.ajax({
+				url:"http://119.91.61.56:8080/blogMessage/record_total_num",
+				type:"GET",
+				dataType:"JSON",
+				success:function(data){
+					var source = $("#totalM").html();
+					var template = Handlebars.compile(source);
+					var html = template(data);
+					$("#total-message").html(html);
+				},
+				error:function(){
+					alert("获取访问信息失败");
+					location.href="404.html";
+				}
+			});
+			/* 显示评论总数 */
+			$.ajax({
+				url:"http://119.91.61.56:8080/blogComment/record_total_num",
+				type:"GET",
+				dataType:"JSON",
+				success:function(data){
+					var source = $("#totalP").html();
+					var template = Handlebars.compile(source);
+					var html = template(data);
+					$("#total-comment").html(html);
+				},
+				error:function(){
+					alert("获取访问信息失败");
+					location.href="404.html";
+				}
+			});
+		});
+		function siteTime(){
+			window.setTimeout("siteTime()", 1000);
+			var seconds = 1000
+			var minutes = seconds * 60
+			var hours = minutes * 60
+			var days = hours * 24
+			var years = days * 365
+			var today = new Date()
+			var todayYear = today.getFullYear()
+			var todayMonth = today.getMonth()
+			var todayDate = today.getDate()
+			var todayHour = today.getHours()
+			var todayMinute = today.getMinutes()
+			var todaySecond = today.getSeconds()
+			var t1 = Date.UTC(2021,05,20,14,56,00)
+			var t2 = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond)
+			var diff = t2-t1
+			var diffYears = Math.floor(diff/years)
+			var diffDays = Math.floor((diff/days)-diffYears*365)
+			var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours)
+			var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes)
+			var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds)
+			document.getElementById("days").innerHTML=""+diffYears+" 年 "+diffDays+" 天 "+diffHours+" 小时 "+diffMinutes+" 分钟 "+diffSeconds+" 秒"
+		}
+		siteTime();
+	</script>
+</body>
+<script src="https://eqcn.ajz.miesnfu.com/wp-content/plugins/wp-3d-pony/live2dw/lib/L2Dwidget.min.js"></script>
+<!-- 引入my.js -->
+<script src="../static/js/my_js/my.js"></script>
+<script>
+	     <!--小帅哥： https://unpkg.com/live2d-widget-model-chitose@1.0.5/assets/chitose.model.json-->
+	      <!--萌娘：https://unpkg.com/live2d-widget-model-shizuku@1.0.5/assets/shizuku.model.json-->
+	      <!--小可爱（女）：https://unpkg.com/live2d-widget-model-koharu@1.0.5/assets/koharu.model.json-->
+	      <!--小可爱（男）：https://unpkg.com/live2d-widget-model-haruto@1.0.5/assets/haruto.model.json-->
+	      <!--初音：https://unpkg.com/live2d-widget-model-miku@1.0.5/assets/miku.model.json-->
+	    L2Dwidget.init({ "model": { jsonPath:
+	          "https://unpkg.com/live2d-widget-model-haruto@1.0.5/assets/haruto.model.json",
+	        "scale": 1 }, "display": { "position": "right", "width": 110, "height": 150,
+	        "hOffset": 0, "vOffset": -20 }, "mobile": { "show": true, "scale": 0.5 },
+	      "react": { "opacityDefault": 0.8, "opacityOnHover": 0.1 } });
+</script>
+<script type="text/template" id="showBlog">
+	{{#each list}}
+		<div class="center">
+			<div class="empty">
+				<header class="article-header">
+					<h1 itemprop="name">
+						<a class="article-title" href="#" target="_blank">&nbsp;{{title}}</a>
+					</h1>
+					<div class="article-meta row">
+						<span class="articleType am-badge am-badge-success">{{creationType}}</span>
+						<div class="originalAuthor">
+							<i class="am-icon-user">&nbsp;{{nickName}}</i>
+						</div>
+						<div class="categories">
+							<i class="am-icon-folder">
+								<a class="linkColor" href="#">{{category}}</a>
+							</i>
+						</div>
+					</div>
+				</header>
+				<div class="article-entry">
+					<div class="article-style">
+						{{content}}
+					</div>
+				</div>
+				<div class="read-all">
+					<img class="first-photo" src="{{firstPicture}}">
+					<div class="rz-read">
+						<div class="rz-reads">
+							<i class="am-icon-calendar">
+								{{createdTime}}&nbsp;&nbsp;
+							</i>
+							<i class="am-icon-eye">&nbsp;{{views}}</i>
+							<i class="am-icon-comment">&nbsp;{{commentCount}}</i> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<a href="blog.html?id={{id}}" target="_blank">阅读全文 <i class="am-icon-angle-double-right"></i></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	{{/each}}
+	<div class="my-row" id="page-father">
+		<div id="pagination">
+			<ul class="am-pagination  am-pagination-centered">
+				<li><a href="javascript:void(0)" onclick="pagesHelper({{pageNum}},{{pages}},0,'S')">&laquo; 上一页</a></li>
+				<span>{{pageNum}}/{{pages}}</span>
+				<li><a href="javascript:void(0)" onclick="pagesHelper({{pageNum}},{{pages}},1,'S')">下一页 &raquo;</a></li>
+			</ul>
+		</div>
+	</div>
+</script>
+<script type="text/template" id="commentT">
+	<ul class="am-list">
+	{{#each list}}
+		<li class="am-g am-list-item-dated" style="height: 72px">
+			<a href="#" style="height:35px" title="{{title}}">
+				{{title}}
+			</a>
+			<div class="the-comment-top">
+				<span class="the-name">{{nickName}}：</span>
+				<span class="the-content">{{content}}</span>
+			</div>
+			<span style="font-size:12px;float:right">{{createdTime}}</span>
+		</li>
+	{{/each}}
+	</ul>
+	<div>
+		<a href="javascript:void(0)" onclick="pagesHelper({{pageNum}},{{pages}},0,'N')" class="prepage">« 上一页</a>
+		<a href="javascript:void(0)" onclick="pagesHelper({{pageNum}},{{pages}},1,'N')" class="nextpage">下一页 »</a>
+	</div>
+</script>
+<script type="text/template" id="messageT">
+	<ul class="am-list">
+	{{#each list}}
+		<li class="am-g am-list-item-dated" style="height: 64px">
+			<div class="the-message-top">
+				<span>{{nickName}}：</span>
+				<span>{{content}}</span>
+			</div>
+			<span style="font-size:12px;float:right;margin-top:25px">{{createdTime}}</span>
+		</li>
+	{{/each}}
+	</ul>
+	<div>
+		<a href="javascript:void(0)" onclick="pagesHelper({{pageNum}},{{pages}},0,'V')" class="prepage">« 上一页</a>
+		<a href="javascript:void(0)" onclick="pagesHelper({{pageNum}},{{pages}},1,'V')" class="nextpage">下一页 »</a>
+	</div>
+</script>
+</html>
